@@ -42,7 +42,7 @@ app.post('/insert-task', async (req, res) => {
     task.dateTime = new Date()
 
     task.save()
-        .then(() => res.redirect(''))
+        .then(() => res.redirect('http://localhost:3000/'))
         .catch(error => res.status(500).json({error}))
 })
 
