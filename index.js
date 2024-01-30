@@ -50,7 +50,7 @@ app.post('/update-task', async (req, res) => {
     const task = req.body
     
     Task.updateOne({_id : req.body._id}, task)
-        .then(() => res.redirect(''))
+        .then(() => res.redirect('http://localhost:3000/'))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -58,7 +58,7 @@ app.post('/delete-task', async (req, res) => {
     const id = req.body._id
     
     await Task.deleteOne({_id : id})
-        .then(() => res.redirect(''))
+        .then(() => res.redirect('http://localhost:3000/'))
         .catch(error => res.status(500).json({error}))
 })
 
