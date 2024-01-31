@@ -54,6 +54,13 @@ app.post('/update-task', async (req, res) => {
         .catch(error => res.status(500).json({error}))
 })
 
+app.post('/update-complete', async (req, res) => {
+
+    Task.updateOne({_id : req.body._id},  { $set: { isComplete: req.body.isComplete } })
+        .then(() => res.redirect('http://localhost:3000/'))
+        .catch(error => res.status(500).json({error}))
+})
+
 app.post('/delete-task', async (req, res) => {
     const id = req.body._id
     
