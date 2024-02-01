@@ -7,7 +7,8 @@ const Task = new Schema ({
     isComplete : {type : Boolean},
     isImportant : {type : Boolean},
     dateTime : {type : Date},
-    user_id : {type : Object}
+    deadLine : {type : Date}
+    // user_id : {type : Object}
 })
 
 module.exports = mongoose.model('tasks', Task)
