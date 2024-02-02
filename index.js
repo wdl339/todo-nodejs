@@ -1,4 +1,5 @@
 const express = require('express')
+const moment = require('moment');
 const path = require('path')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -39,11 +40,7 @@ app.get('/api/tasks', async (req, res) => {
 
 app.post('/insert-task', async (req, res) => {
     const task = new Task(req.body)
-    const currentTime = new Date();
-    const currentUTCTimestamp = currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;
-    const chinaUTCTimezoneOffset = 8 * 60 * 60 * 1000;
-    const chinaTimestamp = currentUTCTimestamp + chinaUTCTimezoneOffset;
-    task.dateTime = new Date(chinaTimestamp);
+    task.dateTime = moment()
 
     task.save()
         .then(() => res.redirect('http://localhost:3000/'))
