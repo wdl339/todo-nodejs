@@ -40,7 +40,7 @@ app.get('/api/tasks', async (req, res) => {
 
 app.post('/insert-task', async (req, res) => {
     const task = new Task(req.body)
-    task.dateTime = moment().utcOffset('+08:00').toDate();
+    task.dateTime = moment().toDate();
 
     task.save()
         .then(() => res.redirect('http://localhost:3000/'))
