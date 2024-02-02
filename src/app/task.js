@@ -7,7 +7,7 @@ const Task = new Schema ({
     isComplete : {type : Boolean},
     isImportant : {type : Boolean},
     dateTime : {type : Date},
-    deadLine : {type : Date}
+    deadLine : {type : Date},
     // user_id : {type : Object}
 })
 

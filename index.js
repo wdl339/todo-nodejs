@@ -39,7 +39,11 @@ app.get('/api/tasks', async (req, res) => {
 
 app.post('/insert-task', async (req, res) => {
     const task = new Task(req.body)
-    task.dateTime = new Date()
+    const currentTime = new Date();
+    const currentUTCTimestamp = currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;
+    const chinaUTCTimezoneOffset = 8 * 60 * 60 * 1000;
+    const chinaTimestamp = currentUTCTimestamp + chinaUTCTimezoneOffset;
+    task.dateTime = new Date(chinaTimestamp);
 
     task.save()
         .then(() => res.redirect('http://localhost:3000/'))
