@@ -5,6 +5,8 @@ const cors = require('cors')
 const db = require("./src/config/db")
 const Task = require('./src/app/task')
 const User = require('./src/app/user')
+const ical = require('node-ical');
+const moment = require('moment');
 const app = express()
 const port = 8080
 
@@ -36,6 +38,35 @@ app.get('/api/tasks', async (req, res) => {
     }
   
 })
+
+app.get('/api/eventlist', async (req, res) => {
+    try {
+        const url = "YOUR_ICAL_URL_HERE";  // 替换为你的iCal URL
+        const data = await fetch(url);
+        const textData = await data.text();
+        const events = ical.parseICS(textData);
+
+        const eventList = [];
+        const now = moment();
+        for (const key in events) {
+            if (events.hasOwnProperty(key)) {
+                const event = events[key];
+                if (event.type === 'VEVENT') {
+                    const endDate = moment(event.end);
+                    if (endDate.isBefore(now)) {
+                        continue;
+                    }
+                    const ddlTimeStr = endDate.format('YYYY-MM-DD HH:mm');
+                    eventList.push([event.summary, event.description, ddlTimeStr]);
+                }
+            }
+        }
+
+        res.json(eventList);
+    } catch (error) {
+        res.status(500).json({error});
+    }
+});
 
 app.post('/insert-task', async (req, res) => {
     const task = new Task(req.body)
