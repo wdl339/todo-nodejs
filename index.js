@@ -41,7 +41,7 @@ app.get('/api/tasks', async (req, res) => {
 
 app.get('/api/eventlist', async (req, res) => {
     try {
-        const url = "YOUR_ICAL_URL_HERE";  // 替换为你的iCal URL
+        const url = "https://oc.sjtu.edu.cn/feeds/calendars/user_5ANNdRErwaHFWaUwCJuLqUk2kyoSNRwMGFtN933O.ics";
         const data = await fetch(url);
         const textData = await data.text();
         const events = ical.parseICS(textData);
