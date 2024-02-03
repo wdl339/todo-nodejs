@@ -57,7 +57,22 @@ app.get('/api/eventlist', async (req, res) => {
                         continue;
                     }
                     const ddlTimeStr = endDate.format('YYYY-MM-DD HH:mm');
-                    eventList.push([event.summary, event.description, ddlTimeStr]);
+
+                    const currentTime = new Date();
+                    currentTime = currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000;
+
+                    const ddlTime = new Date(ddlTimeStr);
+                    ddlTime = ddlTime.getTime() + ddlTime.getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000;
+                
+                    const newEvent = {
+                        name: event.summary,
+                        description: event.description || '',
+                        isComplete: false,
+                        isImportant: false,
+                        dateTime: new Date(chinaTimestamp), 
+                        deadLine: new Date(ddlTime),
+                    };
+                    eventList.push(newEvent);
                 }
             }
         }
