@@ -69,7 +69,7 @@ app.get('/api/eventlist', async (req, res) => {
                         description: event.description || '',
                         isComplete: false,
                         isImportant: false,
-                        dateTime: new Date(chinaTimestamp), 
+                        dateTime: new Date(currentTime), 
                         deadLine: new Date(ddlTime),
                     };
                     eventList.push(newEvent);
