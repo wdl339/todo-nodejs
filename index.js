@@ -58,13 +58,13 @@ app.get('/api/eventlist', async (req, res) => {
                     }
                     const ddlTimeStr = endDate.format('YYYY-MM-DD HH:mm');
 
-                    const currentTime = new Date();
+                    let currentTime = new Date();
                     currentTime = currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000;
 
-                    const ddlTime = new Date(ddlTimeStr);
+                    let ddlTime = new Date(ddlTimeStr);
                     ddlTime = ddlTime.getTime() + ddlTime.getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000;
                 
-                    const newEvent = {
+                    let newEvent = {
                         name: event.summary,
                         description: event.description || '',
                         isComplete: false,
@@ -72,6 +72,7 @@ app.get('/api/eventlist', async (req, res) => {
                         dateTime: new Date(currentTime), 
                         deadLine: new Date(ddlTime),
                     };
+
                     eventList.push(newEvent);
                 }
             }
