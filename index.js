@@ -203,8 +203,8 @@ app.post('/insert-note', async (req, res) => {
 app.post('/update-note', async (req, res) => {
     const note = req.body
 
-    if (note.deadLine === "1970-01-01T00:00:00.000Z") {
-        delete note.deadLine;
+    if (note.deleteTime === "1970-01-01T00:00:00.000Z") {
+        delete note.deleteTime;
     }
     
     Note.updateOne({_id : req.body._id}, note)
