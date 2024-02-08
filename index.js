@@ -7,6 +7,8 @@ const Task = require('./src/app/task')
 const User = require('./src/app/user')
 const ical = require('node-ical');
 const moment = require('moment');
+const { JSDOM } = require('jsdom');
+const { URL } = require('url');
 const app = express()
 const port = 8080
 
@@ -42,6 +44,46 @@ app.get('/api/tasks', async (req, res) => {
     }
   
 })
+
+async function getJwc() {
+    const pageUrl = 'https://jwc.sjtu.edu.cn/xwtg/tztg.htm';
+    try {
+        const response = await fetch(pageUrl)
+        const data = await response.text()
+        const dom = new JSDOM(data)
+        const newsElements = dom.window.document.querySelectorAll('.Newslist .clearfix')
+        const newsList = Array.from(newsElements).map(element => {
+            const sjElement = element.querySelector('.sj')
+            const [year, month] = sjElement.querySelector('p').textContent.split('.')
+            const day = sjElement.querySelector('h2').textContent
+            const contentElement = element.querySelector('.wz')
+            const title = contentElement.querySelector('h2').textContent
+            const link = new URL(contentElement.querySelector('a').href, pageUrl).href
+            const detail = contentElement.querySelector('p').textContent
+            return {
+                year,
+                month,
+                day,
+                title,
+                detail,
+                link
+            }
+        })
+        return newsList
+    } catch (error) {
+        console.error(error)
+        return []
+    }
+  }
+  
+app.get('/api/news', async (req, res) => {
+    getJwc()
+      .then(news => res.json(news))
+      .catch(error => {
+        console.error(error);
+        res.sendStatus(500);
+      });
+});
 
 app.get('/api/eventlist', async (req, res) => {
     try {
