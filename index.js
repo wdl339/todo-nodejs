@@ -5,6 +5,7 @@ const cors = require('cors')
 const db = require("./src/config/db")
 const Task = require('./src/app/task')
 const User = require('./src/app/user')
+const Note = require('./src/app/note')
 const ical = require('node-ical');
 const moment = require('moment');
 const { JSDOM } = require('jsdom');
@@ -46,46 +47,6 @@ app.get('/api/tasks', async (req, res) => {
     }
   
 })
-
-async function getJwc() {
-    const pageUrl = 'https://jwc.sjtu.edu.cn/xwtg/tztg.htm';
-    try {
-        const response = await fetch(pageUrl)
-        const data = await response.text()
-        const dom = new JSDOM(data)
-        const newsElements = dom.window.document.querySelectorAll('.Newslist .clearfix')
-        const newsList = Array.from(newsElements).map(element => {
-            const sjElement = element.querySelector('.sj')
-            const [year, month] = sjElement.querySelector('p').textContent.split('.')
-            const day = sjElement.querySelector('h2').textContent
-            const contentElement = element.querySelector('.wz')
-            const title = contentElement.querySelector('h2').textContent
-            const link = new URL(contentElement.querySelector('a').href, pageUrl).href
-            const detail = contentElement.querySelector('p').textContent
-            return {
-                year,
-                month,
-                day,
-                title,
-                detail,
-                link
-            }
-        })
-        return newsList
-    } catch (error) {
-        console.error(error)
-        return []
-    }
-  }
-  
-app.get('/api/news', async (req, res) => {
-    getJwc()
-      .then(news => res.json(news))
-      .catch(error => {
-        console.error(error);
-        res.sendStatus(500);
-      });
-});
 
 app.get('/api/eventlist', async (req, res) => {
     try {
@@ -171,6 +132,101 @@ app.post('/delete-task', async (req, res) => {
     const id = req.body._id
     
     await Task.deleteOne({_id : id})
+        .then(() => res.redirect('http://localhost:3000/'))
+        .catch(error => res.status(500).json({error}))
+})
+
+//----------------------------------------------Note
+
+app.get('/api/notes', async (req, res) => {
+    try {
+        const noteDocuments = await Note.find({})
+        res.json(noteDocuments)
+    } catch (error){
+        res.status(500).json({error})
+    }
+  
+})
+
+async function getJwc() {
+    const pageUrl = 'https://jwc.sjtu.edu.cn/xwtg/tztg.htm';
+    try {
+        const response = await fetch(pageUrl)
+        const data = await response.text()
+        const dom = new JSDOM(data)
+        const newsElements = dom.window.document.querySelectorAll('.Newslist .clearfix')
+        const newsList = Array.from(newsElements).map(element => {
+
+            const sjElement = element.querySelector('.sj')
+            const [year, month] = sjElement.querySelector('p').textContent.split('.')
+            const day = sjElement.querySelector('h2').textContent
+
+            const date = year + '-' + month + '-' + day
+            const dateTime = new Date(date)
+
+            const contentElement = element.querySelector('.wz')
+            const title = contentElement.querySelector('h2').textContent
+            const link = new URL(contentElement.querySelector('a').href, pageUrl).href
+            const detail = contentElement.querySelector('p').textContent
+            return {
+                dateTime,
+                title,
+                detail,
+                link
+            }
+        })
+        return newsList
+    } catch (error) {
+        console.error(error)
+        return []
+    }
+  }
+  
+app.get('/api/news', async (req, res) => {
+    getJwc()
+      .then(news => res.json(news))
+      .catch(error => {
+        console.error(error);
+        res.sendStatus(500);
+      });
+});
+
+app.post('/insert-note', async (req, res) => {
+    const note = new Note(req.body)
+    const currentTime = new Date();
+    const currentUTCTimestamp = currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;
+    const chinaUTCTimezoneOffset = 8 * 60 * 60 * 1000;
+    const chinaTimestamp = currentUTCTimestamp + chinaUTCTimezoneOffset;
+    note.dateTime = new Date(chinaTimestamp);
+
+    note.save()
+        .then(() => res.redirect('http://localhost:3000/'))
+        .catch(error => res.status(500).json({error}))
+})
+
+app.post('/update-note', async (req, res) => {
+    const note = req.body
+
+    if (note.deadLine === "1970-01-01T00:00:00.000Z") {
+        delete note.deadLine;
+    }
+    
+    Note.updateOne({_id : req.body._id}, note)
+        .then(() => res.redirect('http://localhost:3000/'))
+        .catch(error => res.status(500).json({error}))
+})
+
+app.post('/update-important-note', async (req, res) => {
+
+    Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
+        .then(() => res.redirect('http://localhost:3000/'))
+        .catch(error => res.status(500).json({error}))
+})
+
+app.post('/delete-note', async (req, res) => {
+    const id = req.body._id
+    
+    await Note.deleteOne({_id : id})
         .then(() => res.redirect('http://localhost:3000/'))
         .catch(error => res.status(500).json({error}))
 })
