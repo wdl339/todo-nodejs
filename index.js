@@ -19,11 +19,13 @@ app.use(express.urlencoded({
 }))
 app.use(express.json())
 
+// https://todo-reactjs-flax.vercel.app
+
 app.use(cors([{
-    origin : "https://todo-reactjs-flax.vercel.app"
+    origin : "https://localhost:3000/"
 },
 {
-    origin : "https://todo-reactjs-flax.vercel.app/"
+    origin : "https://localhost:3000/"
 }
 ]))
 
@@ -135,29 +137,33 @@ app.post('/insert-task', async (req, res) => {
     task.dateTime = new Date(chinaTimestamp);
 
     task.save()
-        .then(() => res.redirect('https://todo-reactjs-flax.vercel.app/'))
+        .then(() => res.redirect('https://localhost:3000/'))
         .catch(error => res.status(500).json({error}))
 })
 
 app.post('/update-task', async (req, res) => {
     const task = req.body
+
+    if (task.deadLine === "1970-01-01T00:00:00.000Z") {
+        delete task.deadLine;
+    }
     
     Task.updateOne({_id : req.body._id}, task)
-        .then(() => res.redirect('https://todo-reactjs-flax.vercel.app/'))
+        .then(() => res.redirect('https://localhost:3000/'))
         .catch(error => res.status(500).json({error}))
 })
 
 app.post('/update-complete', async (req, res) => {
 
     Task.updateOne({_id : req.body._id},  { $set: { isComplete: req.body.isComplete } })
-        .then(() => res.redirect('https://todo-reactjs-flax.vercel.app/'))
+        .then(() => res.redirect('https://localhost:3000/'))
         .catch(error => res.status(500).json({error}))
 })
 
 app.post('/update-important', async (req, res) => {
 
     Task.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
-        .then(() => res.redirect('https://todo-reactjs-flax.vercel.app/'))
+        .then(() => res.redirect('https://localhost:3000/'))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -165,13 +171,7 @@ app.post('/delete-task', async (req, res) => {
     const id = req.body._id
     
     await Task.deleteOne({_id : id})
-        .then(() => res.redirect('https://todo-reactjs-flax.vercel.app/'))
-        .catch(error => res.status(500).json({error}))
-})
-
-app.post('/deleteAll-task', async (req, res) => {
-    await Task.deleteMany({})
-        .then(() => res.redirect(''))
+        .then(() => res.redirect('https://localhost:3000/'))
         .catch(error => res.status(500).json({error}))
 })
 
