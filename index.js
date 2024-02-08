@@ -148,14 +148,15 @@ app.get('/api/notes', async (req, res) => {
   
 })
 
-async function getJwc() {
-    const pageUrl = 'https://jwc.sjtu.edu.cn/xwtg/tztg.htm';
+app.get('/api/news', async (req, res) => {
     try {
+        const pageUrl = 'https://jwc.sjtu.edu.cn/xwtg/tztg.htm';
         const response = await fetch(pageUrl)
         const data = await response.text()
         const dom = new JSDOM(data)
         const newsElements = dom.window.document.querySelectorAll('.Newslist .clearfix')
-        const newsList = Array.from(newsElements).map(element => {
+        const newsList = []
+        Array.from(newsElements).map(element => {
 
             const sjElement = element.querySelector('.sj')
             const [year, month] = sjElement.querySelector('p').textContent.split('.')
@@ -168,27 +169,22 @@ async function getJwc() {
             const title = contentElement.querySelector('h2').textContent
             const link = new URL(contentElement.querySelector('a').href, pageUrl).href
             const detail = contentElement.querySelector('p').textContent
-            return {
-                dateTime,
-                title,
-                detail,
-                link
-            }
+
+            let newNews = {
+                title: title,
+                detail: detail || '',
+                link: link,
+                isImportant: false,
+                dateTime: dateTime,
+            };
+
+            newsList.push(newNews);
         })
-        return newsList
+
+        res.json(newsList);
     } catch (error) {
-        console.error(error)
-        return []
+        res.status(500).json({error});
     }
-  }
-  
-app.get('/api/news', async (req, res) => {
-    getJwc()
-      .then(news => res.json(news))
-      .catch(error => {
-        console.error(error);
-        res.sendStatus(500);
-      });
 });
 
 app.post('/insert-note', async (req, res) => {
