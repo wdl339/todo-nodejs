@@ -6,8 +6,7 @@ const Note = new Schema ({
     detail : {type : String},
     link : {type : String},
     isImportant : {type : Boolean},
-    dateTime : {type : Date},
-    deleteTime : {type : Date},
+    dateTime : {type : Date}
     // user_id : {type : Object}
 })
 

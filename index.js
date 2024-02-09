@@ -189,11 +189,6 @@ app.get('/api/news', async (req, res) => {
 
 app.post('/insert-note', async (req, res) => {
     const note = new Note(req.body)
-    const currentTime = new Date();
-    const currentUTCTimestamp = currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;
-    const chinaUTCTimezoneOffset = 8 * 60 * 60 * 1000;
-    const chinaTimestamp = currentUTCTimestamp + chinaUTCTimezoneOffset;
-    note.dateTime = new Date(chinaTimestamp);
 
     note.save()
         .then(() => res.redirect('http://localhost:3000/'))
