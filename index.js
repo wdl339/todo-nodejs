@@ -12,6 +12,8 @@ const { JSDOM } = require('jsdom');
 const { URL } = require('url');
 const app = express()
 const port = 8080
+const web = "http://localhost:3000/"
+// const web = "https://todo-reactjs-flax.vercel.app"
 
 app.use(express.static(path.join(__dirname,"src/public")))
 app.use(morgan('combined'))
@@ -20,13 +22,8 @@ app.use(express.urlencoded({
 }))
 app.use(express.json())
 
-// https://todo-reactjs-flax.vercel.app
-
 app.use(cors([{
-    origin : "http://localhost:3000/"
-},
-{
-    origin : "http://localhost:3000/"
+    origin : web
 }
 ]))
 
@@ -98,7 +95,7 @@ app.post('/insert-task', async (req, res) => {
     task.dateTime = new Date(chinaTimestamp);
 
     task.save()
-        .then(() => res.redirect('http://localhost:3000/'))
+        .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -110,21 +107,21 @@ app.post('/update-task', async (req, res) => {
     }
     
     Task.updateOne({_id : req.body._id}, task)
-        .then(() => res.redirect('http://localhost:3000/'))
+        .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
 })
 
 app.post('/update-complete', async (req, res) => {
 
     Task.updateOne({_id : req.body._id},  { $set: { isComplete: req.body.isComplete } })
-        .then(() => res.redirect('http://localhost:3000/'))
+        .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
 })
 
 app.post('/update-important', async (req, res) => {
 
     Task.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
-        .then(() => res.redirect('http://localhost:3000/'))
+        .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -132,7 +129,7 @@ app.post('/delete-task', async (req, res) => {
     const id = req.body._id
     
     await Task.deleteOne({_id : id})
-        .then(() => res.redirect('http://localhost:3000/'))
+        .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -191,7 +188,7 @@ app.post('/insert-note', async (req, res) => {
     const note = new Note(req.body)
 
     note.save()
-        .then(() => res.redirect('http://localhost:3000/'))
+        .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -203,14 +200,14 @@ app.post('/update-note', async (req, res) => {
     }
     
     Note.updateOne({_id : req.body._id}, note)
-        .then(() => res.redirect('http://localhost:3000/'))
+        .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
 })
 
 app.post('/update-important-note', async (req, res) => {
 
     Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
-        .then(() => res.redirect('http://localhost:3000/'))
+        .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -218,7 +215,7 @@ app.post('/delete-note', async (req, res) => {
     const id = req.body._id
     
     await Note.deleteOne({_id : id})
-        .then(() => res.redirect('http://localhost:3000/'))
+        .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
 })
 
