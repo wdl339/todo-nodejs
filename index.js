@@ -205,7 +205,7 @@ app.post('/update-note', async (req, res) => {
 })
 
 app.post('/update-important-note', async (req, res) => {
-    if (req.body.link && req.body.isImportant){
+    if (req.body.link !== null && req.body.isImportant === true){
 
         const pageUrl = req.body.link;
         const response = await fetch(pageUrl)
