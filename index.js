@@ -205,10 +205,24 @@ app.post('/update-note', async (req, res) => {
 })
 
 app.post('/update-important-note', async (req, res) => {
+    if (req.body.link && req.body.isImportant){
 
-    Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
+        const pageUrl = req.body.link;
+        const response = await fetch(pageUrl)
+        const data = await response.text()
+        const dom = new JSDOM(data)
+        const newDetail = dom.window.document.querySelector('.v_news_content')
+
+        Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant , detail: newDetail} })
         .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
+
+    } else {
+        Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
+        .then(() => res.redirect(web + "note"))
+        .catch(error => res.status(500).json({error}))
+    }
+    
 })
 
 app.post('/delete-note', async (req, res) => {
