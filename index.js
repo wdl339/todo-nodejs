@@ -211,7 +211,7 @@ app.post('/update-important-note', async (req, res) => {
         const response = await fetch(pageUrl)
         const data = await response.text()
         const dom = new JSDOM(data)
-        const newDetail = dom.window.document.querySelector('.v_news_content').textContent
+        const newDetail = dom.window.document.querySelector('.v_news_content').innerHTML
 
         Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant , detail: newDetail} })
         .then(() => res.redirect(web + "note"))
