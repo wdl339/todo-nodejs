@@ -205,7 +205,14 @@ app.post('/update-note', async (req, res) => {
 })
 
 app.post('/update-important-note', async (req, res) => {
-    if (req.body.link && req.body.isImportant === true){
+        
+    Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
+        .then(() => res.redirect(web + "note"))
+        .catch(error => res.status(500).json({error}))
+})
+
+app.post('/update-detail', async (req, res) => {
+    try {
 
         const pageUrl = req.body.link;
         const response = await fetch(pageUrl)
@@ -213,31 +220,13 @@ app.post('/update-important-note', async (req, res) => {
         const dom = new JSDOM(data)
         const newDetail = dom.window.document.querySelector('.v_news_content').textContent
 
-        Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant , detail: newDetail} })
+        Note.updateOne({_id : req.body._id},  { $set: { detail : newDetail } })
         .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
-
-    } else {
-        Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
-        .then(() => res.redirect(web + "note"))
-        .catch(error => res.status(500).json({error}))
+    } catch (error) {
+        res.status(500).json({error});
     }
-    
-})
-
-// app.get('/api/detail', async (req, res) => {
-//     try {
-
-//         const pageUrl = "https://jwc.sjtu.edu.cn/info/1222/112981.htm";
-//         const response = await fetch(pageUrl)
-//         const data = await response.text()
-//         const dom = new JSDOM(data)
-//         const newDetail = dom.window.document.querySelector('.v_news_content').textContent
-//         res.json(newDetail);
-//     } catch (error) {
-//         res.status(500).json({error});
-//     }
-// });
+});
 
 app.post('/delete-note', async (req, res) => {
     const id = req.body._id
