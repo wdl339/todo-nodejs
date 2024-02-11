@@ -12,8 +12,8 @@ const { JSDOM } = require('jsdom');
 const { URL } = require('url');
 const app = express()
 const port = 8080
-const web = "http://localhost:3000/"
-// const web = "https://todo-reactjs-flax.vercel.app"
+// const web = "http://localhost:3000/"
+const web = "https://todo-reactjs-flax.vercel.app"
 
 app.use(express.static(path.join(__dirname,"src/public")))
 app.use(morgan('combined'))
