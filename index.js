@@ -195,7 +195,7 @@ app.post('/insert-note', async (req, res) => {
 app.post('/update-note', async (req, res) => {
     const note = req.body
 
-    if (note.deleteTime === "1970-01-01T00:00:00.000Z") {
+    if (note.deleteTime === "1970-01-01") {
         delete note.deleteTime;
     }
     
