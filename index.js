@@ -215,12 +215,14 @@ app.post('/update-detail', async (req, res) => {
     try {
 
         const pageUrl = req.body.link;
+        // const pageUrl = "https://jwc.sjtu.edu.cn/info/1222/112981.htm"
         const response = await fetch(pageUrl)
         const data = await response.text()
         const dom = new JSDOM(data)
-        const newDetail = dom.window.document.querySelector('.v_news_content').textContent
+        const newDetail = dom.window.document.querySelector('.v_news_content').innerHTML
+        const convertedString = newDetail.replace(/<p[^>]*>/g, '\n').replace(/<\/p>/g, '')
 
-        Note.updateOne({_id : req.body._id},  { $set: { detail : newDetail } })
+        Note.updateOne({_id : req.body._id},  { $set: { detail : convertedString } })
         .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
     } catch (error) {
