@@ -6,8 +6,8 @@ const Note = new Schema ({
     detail : {type : String},
     link : {type : String},
     isImportant : {type : Boolean},
-    dateTime : {type : Date}
-    // user_id : {type : Object}
+    dateTime : {type : Date},
+    user_id : {type : Object}
 })
 
 module.exports = mongoose.model('notes', Note)

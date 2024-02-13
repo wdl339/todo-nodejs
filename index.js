@@ -12,8 +12,8 @@ const { JSDOM } = require('jsdom');
 const { URL } = require('url');
 const app = express()
 const port = 8080
-// const web = "http://localhost:3000/"
-const web = "https://todo-reactjs-flax.vercel.app/"
+const web = "http://localhost:3000/"
+// const web = "https://todo-reactjs-flax.vercel.app/"
 
 app.use(express.static(path.join(__dirname,"src/public")))
 app.use(morgan('combined'))
@@ -95,7 +95,7 @@ app.post('/insert-task', async (req, res) => {
     task.dateTime = new Date(chinaTimestamp);
 
     task.save()
-        .then(() => res.redirect(web))
+        .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -107,21 +107,21 @@ app.post('/update-task', async (req, res) => {
     }
     
     Task.updateOne({_id : req.body._id}, task)
-        .then(() => res.redirect(web))
+        .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
 
 app.post('/update-complete', async (req, res) => {
 
     Task.updateOne({_id : req.body._id},  { $set: { isComplete: req.body.isComplete } })
-        .then(() => res.redirect(web))
+        .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
 
 app.post('/update-important', async (req, res) => {
 
     Task.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
-        .then(() => res.redirect(web))
+        .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -129,7 +129,7 @@ app.post('/delete-task', async (req, res) => {
     const id = req.body._id
     
     await Task.deleteOne({_id : id})
-        .then(() => res.redirect(web))
+        .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -254,7 +254,7 @@ app.post('/insert-user', async (req, res) => {
     const user = new User(req.body)
 
     user.save()
-        .then(() => res.redirect(''))
+        .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -262,7 +262,7 @@ app.post('/update-user', async (req, res) => {
     const user = req.body
     
     User.updateOne({_id : req.body._id}, user)
-        .then(() => res.redirect(''))
+        .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -270,13 +270,7 @@ app.post('/delete-user', async (req, res) => {
     const id = req.body._id
     
     await User.deleteOne({_id : id})
-        .then(() => res.redirect(''))
-        .catch(error => res.status(500).json({error}))
-})
-
-app.post('/deleteAll-user', async (req, res) => {
-    await User.deleteMany({})
-        .then(() => res.redirect(''))
+        .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
 })
 
