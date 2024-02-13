@@ -279,19 +279,21 @@ app.post('/delete-user', async (req, res) => {
 app.post('/api/login', (req, res) => {
     const { userName, passWord } = req.body;
 
-    const user = User.findOne({ userName });
+    const user = User.findOne({ userName })
+    .then(() => {
+        if (!user || passWord !== user.passWord) {
+            res.status(401).json({ error: 'Invalid credentials' });
+            return;
+        }
+    
+        const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
+            expiresIn: '720h',
+        });
+      
+        res.json({ token });
+    })
 
-    if (!user || passWord !== user.passWord) {
-        res.status(401).json({ error: 'Invalid credentials' });
-        return;
-    }
-
-    const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
-        expiresIn: '720h',
-    });
-  
-    res.json({ token });
-  });
+});
 
 function authenticateToken(req, res, next) {
     const token = req.headers.authorization;
