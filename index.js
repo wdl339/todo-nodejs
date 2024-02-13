@@ -10,6 +10,7 @@ const ical = require('node-ical');
 const moment = require('moment');
 const { JSDOM } = require('jsdom');
 const { URL } = require('url');
+const jwt = require('jsonwebtoken');
 const app = express()
 const port = 8080
 const web = "http://localhost:3000/"
@@ -273,6 +274,40 @@ app.post('/delete-user', async (req, res) => {
         .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
 })
+
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+  
+    const secretKey = 'your-secret-key';
+    const options = {
+        expiresIn: '1h',
+    };
+
+    const user = {
+        username: username,
+        password: password
+    };
+    const token = jwt.sign(user, secretKey, options);
+  
+    res.json({ token });
+  });
+
+  app.get('/api/protected', (req, res) => {
+    const token = req.headers.authorization;
+  
+    if (!token) {
+      res.sendStatus(401);
+      return;
+    }
+  
+    jwt.verify(token, secretKey, (err, decoded) => {
+      if (err) {
+        res.sendStatus(403);
+        return;
+      }
+      res.json({ message: 'Access granted.' });
+    });
+  });
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
