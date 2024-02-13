@@ -14,6 +14,7 @@ const jwt = require('jsonwebtoken');
 const app = express()
 const port = 8080
 const web = "http://localhost:3000/"
+const SECRET_KEY = 'your-secret-key';
 // const web = "https://todo-reactjs-flax.vercel.app/"
 
 app.use(express.static(path.join(__dirname,"src/public")))
@@ -276,38 +277,52 @@ app.post('/delete-user', async (req, res) => {
 })
 
 app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
-  
-    const secretKey = 'your-secret-key';
-    const options = {
-        expiresIn: '1h',
-    };
+    const { userName, passWord } = req.body;
 
-    const user = {
-        username: username,
-        password: password
-    };
-    const token = jwt.sign(user, secretKey, options);
+    const user = User.findOne({ userName });
+
+    if (!user || passWord !== user.passWord) {
+        res.status(401).json({ error: 'Invalid credentials' });
+        return;
+    }
+
+    const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
+        expiresIn: '720h',
+    });
   
     res.json({ token });
   });
 
-  app.get('/api/protected', (req, res) => {
+function authenticateToken(req, res, next) {
     const token = req.headers.authorization;
   
     if (!token) {
-      res.sendStatus(401);
+      res.status(401).json({ error: 'Access denied' });
       return;
     }
   
-    jwt.verify(token, secretKey, (err, decoded) => {
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
       if (err) {
-        res.sendStatus(403);
+        res.status(403).json({ error: 'Invalid token' });
         return;
       }
-      res.json({ message: 'Access granted.' });
+      
+      req.userId = decoded.userId;
+  
+      next();
     });
-  });
+}
+
+app.get('/api/protected', authenticateToken, async (req, res) => {
+    try {
+      // 使用 req.userId 来访问当前登录用户的ID
+      // ...
+  
+      res.json({ message: 'Access granted' });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
