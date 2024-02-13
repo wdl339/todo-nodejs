@@ -279,7 +279,7 @@ app.post('/delete-user', async (req, res) => {
 app.post('/api/login', (req, res) => {
     const { userName, passWord } = req.body;
 
-    const user = User.findOne({ userName })
+    User.findOne({ userName })
     .then((user) => {
         if (!user || passWord !== user.passWord) {
             res.status(401).json({ error: 'Invalid credentials' });
