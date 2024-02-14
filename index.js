@@ -318,7 +318,7 @@ function authenticateToken(req, res, next) {
     });
 }
 
-app.get('/api/protected', authenticateToken, async (req, res) => {
+app.post('/api/protected', authenticateToken, async (req, res) => {
     try {
       const userId = req.userId;
       res.json({ user_id: userId });
