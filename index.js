@@ -287,7 +287,7 @@ app.post('/api/login', (req, res) => {
         }
     
         const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
-            expiresIn: '720h',
+            expiresIn: '1h',
         });
       
         res.json({ token });
@@ -320,10 +320,8 @@ function authenticateToken(req, res, next) {
 
 app.get('/api/protected', authenticateToken, async (req, res) => {
     try {
-      // 使用 req.userId 来访问当前登录用户的ID
-      // ...
-  
-      res.json({ message: 'Access granted' });
+      const userId = req.userId;
+      res.json({ user_id: userId });
     } catch (error) {
       res.status(500).json({ error });
     }
