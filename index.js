@@ -152,6 +152,7 @@ app.get('/api/notes', async (req, res) => {
 app.get('/api/news', async (req, res) => {
     try {
         const pageUrl = 'https://jwc.sjtu.edu.cn/xwtg/tztg.htm';
+        // const pageUrl = 'https://jwc.sjtu.edu.cn/index/mxxsdtz.htm'
         const response = await fetch(pageUrl)
         const data = await response.text()
         const dom = new JSDOM(data)
@@ -198,10 +199,6 @@ app.post('/insert-note', async (req, res) => {
 
 app.post('/update-note', async (req, res) => {
     const note = req.body
-
-    if (note.deleteTime === "1970-01-01") {
-        delete note.deleteTime;
-    }
     
     Note.updateOne({_id : req.body._id}, note)
         .then(() => res.redirect(web + "note"))
