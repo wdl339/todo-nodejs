@@ -13,9 +13,9 @@ const { URL } = require('url');
 const jwt = require('jsonwebtoken');
 const app = express()
 const port = 8080
-// const web = "http://localhost:3000/"
+const web = "http://localhost:3000/"
 const SECRET_KEY = 'your-secret-key';
-const web = "https://todo-reactjs-flax.vercel.app/"
+// const web = "https://todo-reactjs-flax.vercel.app/"
 
 app.use(express.static(path.join(__dirname,"src/public")))
 app.use(morgan('combined'))
@@ -50,7 +50,10 @@ app.get('/api/tasks', async (req, res) => {
 
 app.get('/api/eventlist', async (req, res) => {
     try {
-        const url = "https://oc.sjtu.edu.cn/feeds/calendars/user_5ANNdRErwaHFWaUwCJuLqUk2kyoSNRwMGFtN933O.ics";
+        const user_id = req.query.user_id;
+        const user = await User.findOne({ user_id: user_id });
+        // const url = "https://oc.sjtu.edu.cn/feeds/calendars/user_5ANNdRErwaHFWaUwCJuLqUk2kyoSNRwMGFtN933O.ics";
+        const url = user.canvasUrl;
         const data = await fetch(url);
         const textData = await data.text();
         const events = ical.parseICS(textData);
