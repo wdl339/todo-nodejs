@@ -13,9 +13,9 @@ const { URL } = require('url');
 const jwt = require('jsonwebtoken');
 const app = express()
 const port = 8080
-const web = "http://localhost:3000/"
+// const web = "http://localhost:3000/"
 const SECRET_KEY = 'your-secret-key';
-// const web = "https://todo-reactjs-flax.vercel.app/"
+const web = "https://todo-reactjs-flax.vercel.app/"
 
 app.use(express.static(path.join(__dirname,"src/public")))
 app.use(morgan('combined'))
