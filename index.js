@@ -39,7 +39,8 @@ app.get('/', async (req, res) => {
 
 app.get('/api/tasks', async (req, res) => {
     try {
-        const taskDocuments = await Task.find({})
+        const user_id = req.query.user_id;
+        const taskDocuments = await Task.find({ user_id: user_id })
         res.json(taskDocuments)
     } catch (error){
         res.status(500).json({error})
@@ -139,8 +140,9 @@ app.post('/delete-task', async (req, res) => {
 
 app.get('/api/notes', async (req, res) => {
     try {
-        const noteDocuments = await Note.find({})
-        res.json(noteDocuments)
+        const user_id = req.query.user_id;
+        const taskDocuments = await Note.find({ user_id: user_id })
+        res.json(taskDocuments)
     } catch (error){
         res.status(500).json({error})
     }
