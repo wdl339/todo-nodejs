@@ -261,10 +261,22 @@ app.get('/api/users', async (req, res) => {
 
 app.post('/insert-user', async (req, res) => {
     const user = new User(req.body)
+    const email = user.email
+    const name = user.userName
+    const existingUser = await User.findOne({
+        $or: [
+            {email: email },
+            {userName: name}
+        ]
+    })
 
-    user.save()
+    if (existingUser) {
+        return res.status(400).json({ error: '该邮箱或用户名已被注册' });
+    } else {
+        user.save()
         .then(() => res.redirect(web))
         .catch(error => res.status(500).json({error}))
+    }
 })
 
 app.post('/update-user', async (req, res) => {
