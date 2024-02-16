@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+const nodemailer = require('nodemailer');
 
 let nodeMail = nodemailer.createTransport({
     service: 'qq', 
