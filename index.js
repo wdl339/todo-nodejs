@@ -2,15 +2,19 @@ const express = require('express')
 const path = require('path')
 const morgan = require('morgan')
 const cors = require('cors')
+
 const db = require("./src/config/db")
 const Task = require('./src/app/task')
 const User = require('./src/app/user')
 const Note = require('./src/app/note')
+const nodeMail = require('./src/app/mailer')
+
 const ical = require('node-ical');
 const moment = require('moment');
 const { JSDOM } = require('jsdom');
 const { URL } = require('url');
 const jwt = require('jsonwebtoken');
+
 const app = express()
 const port = 8080
 const web = "http://localhost:3000/"
@@ -328,6 +332,30 @@ app.post('/api/protected', authenticateToken, async (req, res) => {
     } catch (error) {
       res.status(500).json({ error });
     }
+});
+
+app.post('/api/email', async (req, res) => {
+    const email = req.body.email
+    const code = req.body.code
+    // String(Math.floor(Math.random() * 1000000)).padEnd(6, '0')
+    const mail = {
+        from: `"wdl"<2720609228@qq.com>`,
+        subject: '验证码',
+        to: email,
+        html: `
+            <p>同学你好！</p>
+            <p>你的验证码是：<strong style="color:orangered;">${code}</strong></p>
+            <p>打死也不要告诉别人哦！</p>
+            <p>如果不是本人操作，请无视此邮件</p>
+        ` 
+    };
+    await nodeMail.sendMail(mail, (err, info) => {
+        if (!err) {
+            res.json({msg: "验证码发送成功"})
+        } else {
+            res.json({msg: "验证码发送失败，请稍后重试"})
+        }
+    })
 });
 
 app.listen(port, () => {
