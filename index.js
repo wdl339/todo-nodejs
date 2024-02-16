@@ -7,7 +7,7 @@ const db = require("./src/config/db")
 const Task = require('./src/app/task')
 const User = require('./src/app/user')
 const Note = require('./src/app/note')
-const nodeMail = require('./src/app/mailer')
+const nodeMail = require('./mailer')
 
 const ical = require('node-ical');
 const moment = require('moment');
