@@ -103,13 +103,13 @@ app.post('/insert-task', async (req, res) => {
 })
 
 app.post('/update-task', async (req, res) => {
-    const task = req.body
+    const task = new Task(req.body)
 
     if (task.deadLine === "1970-01-01T00:00:00.000Z") {
         delete task.deadLine;
     }
     
-    Task.updateOne({_id : task._id}, task)
+    await Task.updateOne({_id : task._id}, task)
         .catch(error => res.status(500).json({error}))
 })
 
