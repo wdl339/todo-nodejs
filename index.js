@@ -110,6 +110,7 @@ app.post('/update-task', async (req, res) => {
     }
     
     await Task.updateOne({_id : task._id}, task)
+        .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
 
