@@ -132,7 +132,7 @@ app.post('/delete-task', async (req, res) => {
     const id = req.body._id
     
     await Task.deleteOne({_id : id})
-        // .then(() => res.redirect(web + "task"))
+        .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
 
