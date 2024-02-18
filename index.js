@@ -17,9 +17,9 @@ const jwt = require('jsonwebtoken');
 
 const app = express()
 const port = 8080
-// const web = "http://localhost:3000/"
+const web = "http://localhost:3000/"
 const SECRET_KEY = 'your-secret-key';
-const web = "https://todo-reactjs-flax.vercel.app/"
+// const web = "https://todo-reactjs-flax.vercel.app/"
 
 app.use(express.static(path.join(__dirname,"src/public")))
 app.use(morgan('combined'))
@@ -98,15 +98,9 @@ app.get('/api/eventlist', async (req, res) => {
 
 app.post('/insert-task', async (req, res) => {
     const task = new Task(req.body)
-    const currentTime = new Date();
-    const currentUTCTimestamp = currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;
-    const chinaUTCTimezoneOffset = 8 * 60 * 60 * 1000;
-    const chinaTimestamp = currentUTCTimestamp + chinaUTCTimezoneOffset;
-    task.dateTime = new Date(chinaTimestamp);
 
-    task.save()
-        .then(() => res.redirect(web + "task"))
-        .catch(error => res.status(500).json({error}))
+    const savedTask = await task.save()
+    res.json({ id: savedTask._id })
 })
 
 app.post('/update-task', async (req, res) => {
