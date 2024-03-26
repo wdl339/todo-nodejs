@@ -17,9 +17,9 @@ const jwt = require('jsonwebtoken');
 
 const app = express()
 const port = 8080
-// const web = "http://localhost:3000/"
+const web = "http://localhost:3000/"
 const SECRET_KEY = 'your-secret-key';
-const web = "https://todo-reactjs-flax.vercel.app/"
+// const web = "https://todo-reactjs-flax.vercel.app/"
 
 app.use(express.static(path.join(__dirname,"src/public")))
 app.use(morgan('combined'))
@@ -75,7 +75,8 @@ app.get('/api/eventlist', async (req, res) => {
                     const ddlTimeStr = endDate.format('YYYY-MM-DD HH:mm');
 
                     let ddlTime = new Date(ddlTimeStr);
-                    ddlTime = ddlTime.getTime() + ddlTime.getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000;
+                    // ddlTime = ddlTime.getTime() + ddlTime.getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000;
+                    ddlTime = ddlTime.getTime();
                 
                     let newEvent = {
                         name: event.summary,
@@ -299,7 +300,7 @@ app.post('/api/login', (req, res) => {
         }
     
         const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
-            expiresIn: '24h',
+            expiresIn: '168h',
         });
       
         res.json({ token });
