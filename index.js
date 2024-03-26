@@ -7,7 +7,7 @@ const db = require("./src/config/db")
 const Task = require('./src/app/task')
 const User = require('./src/app/user')
 const Note = require('./src/app/note')
-import nodeMail from './mailer.js'
+const nodeMail = require('./mailer.js');
 
 const ical = require('node-ical');
 const moment = require('moment');
@@ -17,9 +17,9 @@ const jwt = require('jsonwebtoken');
 
 const app = express()
 const port = 8080
-const web = "http://localhost:3000/"
+// const web = "http://localhost:3000/"
 const SECRET_KEY = 'your-secret-key';
-// const web = "https://todo-reactjs-flax.vercel.app/"
+const web = "https://todo-reactjs-flax.vercel.app/"
 
 app.use(express.static(path.join(__dirname,"src/public")))
 app.use(morgan('combined'))
