@@ -29,7 +29,7 @@ app.use(express.urlencoded({
 app.use(express.json())
 
 app.use(cors([{
-    origin : web
+    origin: ["http://localhost:3000", "https://todo-reactjs-flax.vercel.app"]
 }
 ]))
 
