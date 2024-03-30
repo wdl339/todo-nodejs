@@ -111,6 +111,7 @@ app.post('/update-task', async (req, res) => {
     }
     
     Task.updateOne({_id : task._id}, task)
+        .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -130,6 +131,7 @@ app.post('/delete-task', async (req, res) => {
     const id = req.body._id
     
     await Task.deleteOne({_id : id})
+        .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -190,7 +192,6 @@ app.post('/insert-note', async (req, res) => {
     const note = new Note(req.body)
 
     note.save()
-        .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -205,7 +206,6 @@ app.post('/update-note', async (req, res) => {
 app.post('/update-important-note', async (req, res) => {
         
     Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
-        .then(() => res.redirect(web + "note"))
         .catch(error => res.status(500).json({error}))
 })
 
