@@ -111,7 +111,7 @@ app.post('/update-task', async (req, res) => {
     }
     
     Task.updateOne({_id : task._id}, task)
-        .then(() => res.redirect(web + "note"))
+        .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -131,7 +131,7 @@ app.post('/delete-task', async (req, res) => {
     const id = req.body._id
     
     await Task.deleteOne({_id : id})
-        .then(() => res.redirect(web + "note"))
+        .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
 
