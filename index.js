@@ -138,7 +138,7 @@ app.post('/delete-task', async (req, res) => {
         .catch(error => res.status(500).json({error}))
 })
 
-app.get('/api/taskLastUpdated', async (req, res) => {
+app.get('/taskLastUpdated', async (req, res) => {
     try {
         const user_id = req.query.user_id;
         const user = await User.findOne({ _id: user_id });
