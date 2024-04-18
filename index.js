@@ -91,6 +91,9 @@ app.get('/api/eventlist', async (req, res) => {
             }
         }
 
+        user.lastUpdated = new Date();
+        await user.save();
+
         res.json(eventList);
     } catch (error) {
         res.status(500).json({error});
@@ -134,6 +137,16 @@ app.post('/delete-task', async (req, res) => {
         .then(() => res.redirect(web + "task"))
         .catch(error => res.status(500).json({error}))
 })
+
+app.get('/api/taskLastUpdated', async (req, res) => {
+    try {
+        const user_id = req.query.user_id;
+        const user = await User.findOne({ _id: user_id });
+        res.json({ lastUpdated: user.lastUpdated });
+    } catch (error) {
+        res.status(500).json({error});
+    }
+});
 
 //----------------------------------------------Note
 
