@@ -121,12 +121,14 @@ app.post('/update-task', async (req, res) => {
 app.post('/update-complete', async (req, res) => {
 
     Task.updateOne({_id : req.body._id},  { $set: { isComplete: req.body.isComplete } })
+        .then(() => res.json({msg: "success"}))
         .catch(error => res.status(500).json({error}))
 })
 
 app.post('/update-important', async (req, res) => {
 
     Task.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
+        .then(() => res.json({msg: "success"}))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -203,8 +205,9 @@ app.get('/api/news', async (req, res) => {
 
 app.post('/insert-note', async (req, res) => {
     const note = new Note(req.body)
-
+    
     note.save()
+        .then(() => res.json({msg: "success"}))
         .catch(error => res.status(500).json({error}))
 })
 
@@ -219,6 +222,7 @@ app.post('/update-note', async (req, res) => {
 app.post('/update-important-note', async (req, res) => {
         
     Note.updateOne({_id : req.body._id},  { $set: { isImportant: req.body.isImportant } })
+        .then(() => res.json({msg: "success"}))
         .catch(error => res.status(500).json({error}))
 })
 
