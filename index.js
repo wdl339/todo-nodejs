@@ -56,7 +56,6 @@ app.get('/api/eventlist', async (req, res) => {
     try {
         const user_id = req.query.user_id;
         const user = await User.findOne({ _id: user_id });
-        // const url = "https://oc.sjtu.edu.cn/feeds/calendars/user_5ANNdRErwaHFWaUwCJuLqUk2kyoSNRwMGFtN933O.ics";
         const url = user.canvasUrl;
         const data = await fetch(url);
         const textData = await data.text();
